@@ -1,5 +1,7 @@
 import ToolEntity from '../entities/toolEntity';
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient()
 
 class ToolRepository {
   async getAllTools() {
@@ -22,4 +24,4 @@ class ToolRepository {
   }
 }
 
-module.exports = ToolRepository;
+export default ToolRepository;
