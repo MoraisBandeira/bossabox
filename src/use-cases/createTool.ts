@@ -6,4 +6,4 @@ const createTool = async (toolData:any) => {
   return toolRepository.createTool(toolData);
 };
 
-module.exports = createTool;
+export default createTool;
