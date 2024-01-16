@@ -1,26 +1,23 @@
-import ToolEntity from '../entities/toolEntity';
-import { PrismaClient } from '@prisma/client';
 
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient()
 
 class ToolRepository {
   async getAllTools() {
-    const toolsData = await prisma.tool.findMany();
-    return toolsData.map(tool => new ToolEntity(tool));
+    return await prisma.tool.findMany();
   }
 
   async createTool(toolData:any) {
-    const newToolData = await prisma.tool.create({ data: toolData });
-    return new ToolEntity(newToolData);
+    const createdTool = await prisma.tool.create({data:toolData})
+    if(createdTool){
+      return createdTool;
+    }
   }
 
   async removeTool(toolId:any) {
-    const removedToolData = await prisma.tool.delete({
-      where: {
-        id: toolId,
-      },
-    });
-    return removedToolData;
+    return await prisma.tool.delete({where:{
+      id:parseInt(toolId)
+    }})
   }
 }
 
