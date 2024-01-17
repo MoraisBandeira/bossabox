@@ -8,11 +8,11 @@ const prisma = new PrismaClient();
 
 const router = express.Router();
 
-router.delete('/:id',removeToolController)
+router.delete('/tools/:id',removeToolController)
 
-router.get('/', getToolController);
-  
-router.post('/',createToolController)
+router.get('/tools', getToolController);
+
+router.post('/tools',createToolController)
   
 
 
