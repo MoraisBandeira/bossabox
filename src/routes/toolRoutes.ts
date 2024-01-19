@@ -1,12 +1,22 @@
 import express from 'express';
+import { Request,Response,NextFunction } from "express";
 import getToolController from '../controllers/getToolsController';
 import removeToolController from '../controllers/deleteToolsController';
 import createToolController from '../controllers/createToolsController';
+import { body, param, query, validationResult } from 'express-validator';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
 const router = express.Router();
+
+// Middleware para validar os resultados da validação
+const validateResult = (req:Request, res:Response, next:NextFunction) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  };
+
 /**
  * @swagger
  * /tools/{id}:
@@ -26,7 +36,12 @@ const router = express.Router();
  *           application/json:
  *             example: {}
  */
-router.delete('/tools/:id',removeToolController)
+router.delete('/tools/:id',
+[
+    param('id').isInt().withMessage('O ID deve ser um número inteiro'),
+  ],
+   validateResult,
+  removeToolController)
 
 /**
  * @swagger
@@ -56,7 +71,9 @@ router.delete('/tools/:id',removeToolController)
  *                  tags: ["web","framework","node","http2","https","localhost"]
                      */
 
-router.get('/tools', getToolController);
+router.get('/tools', [
+    query('tag').optional().isString().withMessage('A tag deve ser uma string'),
+  ], validateResult, getToolController);
 
 /**
  * @swagger
@@ -83,7 +100,15 @@ router.get('/tools', getToolController);
  *               description: "Local app manager. Start apps within your browser, developer tool with local .localhost domain and https out of the box."
  *               tags: ["node", "organizing", "webapps", "domain", "developer", "https", "proxy"]
  */
-router.post('/tools',createToolController)
+router.post('/tools', 
+    [
+    body('title').isString().withMessage('O título deve ser uma string'),
+    body('link').isURL().withMessage('O link deve ser uma URL válida'),
+    body('description').isString().withMessage('A descrição deve ser uma string'),
+    body('tags').isArray().withMessage('As tags devem ser um array'),
+  ],
+   validateResult,
+  createToolController)
   
 
 
