@@ -4,7 +4,7 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Bossabox',
+      title: 'VUTTR (Very Useful Tools to Remember)',
       version: '1.0.0',
     },
   },
